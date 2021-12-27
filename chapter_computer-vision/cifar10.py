@@ -64,41 +64,42 @@ def reorg_train_valid(data_dir, labels, valid_ratio):
         copyfile(fname, os.path.join(data_dir, 'train_valid_test',
                                      'train_valid', label))
         if label not in label_count or label_count[label] < n_valid_per_label:
-            copyfile(fname, os.path.join(data_dir, 'train_valid_test',
-                                         'valid', label))
+            copyfile(fname, os.path.join(data_dir, 'train_valid_test', 'valid', label))
             label_count[label] = label_count.get(label, 0) + 1
         else:
-            copyfile(fname, os.path.join(data_dir, 'train_valid_test',
-                                         'train', label))
+            copyfile(fname, os.path.join(data_dir, 'train_valid_test', 'train', label))
     return n_valid_per_label
 
-#@save
+
+# @save
 def reorg_test(data_dir):
     """在预测期间整理测试集，以方便读取"""
     for test_file in os.listdir(os.path.join(data_dir, 'test')):
         copyfile(os.path.join(data_dir, 'test', test_file),
                  os.path.join(data_dir, 'train_valid_test', 'test',
                               'unknown'))
+
+
 def reorg_cifar10_data(data_dir, valid_ratio):
     labels = read_csv_labels(os.path.join(data_dir, 'trainLabels.csv'))
     reorg_train_valid(data_dir, labels, valid_ratio)
     reorg_test(data_dir)
 
+
 def get_net():
     num_classes = 10
     net = d2l.resnet18(num_classes, 3)
     return net
-def train(net, train_iter, valid_iter, num_epochs, lr, wd, devices, lr_period,
-          lr_decay):
-    trainer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9,
-                              weight_decay=wd)
+
+
+def train(net, train_iter, valid_iter, num_epochs, lr, wd, devices, lr_period, lr_decay):
+    trainer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9, weight_decay=wd)
     scheduler = torch.optim.lr_scheduler.StepLR(trainer, lr_period, lr_decay)
     num_batches, timer = len(train_iter), d2l.Timer()
     legend = ['train loss', 'train acc']
     if valid_iter is not None:
         legend.append('valid acc')
-    animator = d2l.Animator(xlabel='epoch', xlim=[1, num_epochs],
-                            legend=legend)
+    animator = d2l.Animator(xlabel='epoch', xlim=[1, num_epochs], legend=legend)
     net = nn.DataParallel(net, device_ids=devices).to(devices[0])
     for epoch in range(num_epochs):
         net.train()
@@ -111,8 +112,7 @@ def train(net, train_iter, valid_iter, num_epochs, lr, wd, devices, lr_period,
             timer.stop()
             if (i + 1) % (num_batches // 5) == 0 or i == num_batches - 1:
                 animator.add(epoch + (i + 1) / num_batches,
-                             (metric[0] / metric[2], metric[1] / metric[2],
-                              None))
+                             (metric[0] / metric[2], metric[1] / metric[2], None))
         if valid_iter is not None:
             valid_acc = d2l.evaluate_accuracy_gpu(net, valid_iter)
             animator.add(epoch + 1, (None, None, valid_acc))
@@ -122,7 +122,9 @@ def train(net, train_iter, valid_iter, num_epochs, lr, wd, devices, lr_period,
     if valid_iter is not None:
         measures += f', valid acc {valid_acc:.3f}'
     print(measures + f'\n{metric[2] * num_epochs / timer.sum():.1f}'
-          f' examples/sec on {str(devices)}')
+                     f' examples/sec on {str(devices)}')
+
+
 if __name__ == '__main__':
     labels = read_csv_labels(os.path.join(data_dir, 'trainLabels.csv'))
     print('# 训练样本 :', len(labels))
