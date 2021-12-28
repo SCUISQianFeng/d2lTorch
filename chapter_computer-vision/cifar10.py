@@ -32,7 +32,7 @@ demo = True
 # else:
 #     data_dir = '../data/cifar-10/'
 
-data_dir = r'E:\DataSet\DataSet\ClassicalDatasets\cifar\cifar-10-batches-py'
+data_dir = r'E:\DataSet\DataSet\ClassicalDatasets\cifar\cifar-10'
 
 
 # @save
@@ -83,8 +83,7 @@ def reorg_test(data_dir):
 
 
 def reorg_cifar10_data(data_dir, valid_ratio):
-    labels = read_csv_labels(os.path.join(data_dir, 'trainLa '
-                                                    'bels.csv'))
+    labels = read_csv_labels(os.path.join(data_dir, 'trainLabels.csv'))
     reorg_train_valid(data_dir, labels, valid_ratio)
     reorg_test(data_dir)
 
@@ -135,7 +134,6 @@ if __name__ == '__main__':
     batch_size = 32 if demo else 128
     valid_ratio = 0.1
     reorg_cifar10_data(data_dir, valid_ratio)
-
     transform_train = torchvision.transforms.Compose([
         # 在高度和宽度上将图像放大到40像素的正方形
         torchvision.transforms.Resize(40),
