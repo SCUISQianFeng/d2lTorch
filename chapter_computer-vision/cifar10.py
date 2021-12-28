@@ -27,10 +27,12 @@ d2l.DATA_HUB['cifar10_tiny'] = (d2l.DATA_URL + 'kaggle_cifar10_tiny.zip',
 # 如果你使用完整的Kaggle竞赛的数据集，设置demo为False
 demo = True
 
-if demo:
-    data_dir = d2l.download_extract('cifar10_tiny')
-else:
-    data_dir = '../data/cifar-10/'
+# if demo:
+#     data_dir = d2l.download_extract('cifar10_tiny')
+# else:
+#     data_dir = '../data/cifar-10/'
+
+data_dir = r'E:\DataSet\DataSet\ClassicalDatasets\cifar\cifar-10-batches-py'
 
 
 # @save
@@ -81,7 +83,8 @@ def reorg_test(data_dir):
 
 
 def reorg_cifar10_data(data_dir, valid_ratio):
-    labels = read_csv_labels(os.path.join(data_dir, 'trainLabels.csv'))
+    labels = read_csv_labels(os.path.join(data_dir, 'trainLa '
+                                                    'bels.csv'))
     reorg_train_valid(data_dir, labels, valid_ratio)
     reorg_test(data_dir)
 
